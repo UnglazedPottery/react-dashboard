@@ -10,6 +10,8 @@ import avatar from '../data/avatar.jpg';
 import { Cart, Chat, Notification, UserProfile } from '.';
 import { useStateContext } from '../contexts/ContextProvider';
 
+//this file has two function components: Navbutton and Navbar
+
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button 
@@ -20,16 +22,36 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
     >
       <span style={{ background: dotColor }}
         className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      >
-        {icon}
-      </span>
+      />
+      {icon}
 
     </button>
   </TooltipComponent>
 )
 
 const Navbar = () => {
-  const { activeMenu, setActiveMenu } = useStateContext();
+  const { activeMenu, setActiveMenu, isClicked, setIsClicked, handleClick,
+  screenSize, setScreenSize } = useStateContext();
+
+  //figure out screen size initially(once) when window loads by passing in [] as second argument
+  useEffect(() => {
+    const handleResize = () => setScreenSize(window.innerWidth);
+
+    window.addEventListener('resize', handleResize)
+
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  //open or close sidebar depending on screen size
+  useEffect(() => {
+    if(screenSize <=900) {
+      setActiveMenu(false);
+    } else {
+      setActiveMenu(true);
+    }
+  }, [screenSize]);
 
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
@@ -74,6 +96,12 @@ const Navbar = () => {
             <MdKeyboardArrowDown className="text-gray-400 text-14"/>
           </div>
         </TooltipComponent>
+
+        {console.log(isClicked)}
+        {isClicked.cart && <Cart />}
+        {isClicked.chat && <Chat />}
+        {isClicked.notification && <Notification />}
+        {isClicked.userProfile && <UserProfile />}
       </div>
     </div>
   )
