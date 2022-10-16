@@ -97,7 +97,6 @@ const Navbar = () => {
           </div>
         </TooltipComponent>
 
-        {console.log(isClicked)}
         {isClicked.cart && <Cart />}
         {isClicked.chat && <Chat />}
         {isClicked.notification && <Notification />}
